@@ -1,9 +1,8 @@
 {% extends 'layouts/base.html' %} 
 {% block title %} Homepage - {{ block.super }}{% endblock %} 
 {% block content %}
-    {% for CATEGORY in categories %} 
-    <h2>{{ Part.NUMBER }} </h2> 
-    <p>{{ Part.PART_NUM }} </p> 
+    {% for part in parts %}
+    <h2>{{ part.NUMBER }} </h2> 
+    <p>{{ part.PART_NUM }} </p> 
     {% endfor %}
-
 {% endblock %}
