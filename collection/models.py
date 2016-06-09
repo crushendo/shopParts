@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-class Category(models.Model): 
-    name = models.CharField(max_length = 255) 
-    description = models.TextField() 
-    slug = models.SlugField(unique = True)
+class Part(models.Model): 
+    AUTONUM = models.TextField() 
+    CATEGORY = models.TextField(default = ' ') 
+    NUMBER = models.TextField(default = ' ')
+    PART_NUM = models.TextField(default = ' ')
+    PART_DESC = models.TextField(default = ' ')
+    Slug = models.SlugField(unique = True)

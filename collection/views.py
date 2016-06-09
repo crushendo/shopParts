@@ -1,12 +1,11 @@
 from django.shortcuts import render
-from collection.models import Category
+from collection.models import Part
 
 # Create your views here.
 def index(request):
-    number = 6
-    categories = Category.objects.all()
+    parts = Part.objects.all()
+    
     
     return render( request, 'index.html', { 
-        'number': number,
-        'categories': categories,
+        'PAR_NUM': parts,
     })
