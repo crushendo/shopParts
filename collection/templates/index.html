@@ -1,8 +1,52 @@
 {% extends 'layouts/base.html' %} 
 {% block title %} Homepage - {{ block.super }}{% endblock %} 
+
 {% block content %}
-    {% for part in parts %}
-    <h2>{{ part.NUMBER }} </h2> 
-    <p>{{ part.PART_NUM }} </p> 
-    {% endfor %}
+
+    <h2>
+        <p>Select Part Category:   </p>
+        <select id="SelectCat" onchange="getSelection1()" > 
+            <option value="Select a Category"> Select a Category </option>
+            {% for part in partDistinct %}
+                <option value="{{part}}"> {{ part }} </option>
+            {% endfor %}
+        </select>
+    </h2>
+
+<script type="text/javascript">
+    function getSelection1() {
+        document.getElementById("SelectNum").options.length = 0;
+        var selection1 = document.getElementById("SelectCat").value;
+        var a = {{ jsonDict|safe }};
+        var selectedNums = a[selection1];
+        var numsList = a[selection1];
+        var length = 0;
+        for( var selected1 in numsList ) {
+            if( numsList.hasOwnProperty(selected1) ) {
+                ++length;
+            };
+        }
+        var check = typeof numsList
+        var select = document.getElementById('SelectNum');
+        select.options[select.options.length] = new Option("Select a Part Number", "Select a Part Number");
+        for(var ii = 0; ii < length; ii++){
+            numOption = numsList[ii];
+            if (numOption == ""){
+                continue;
+            }
+            select.options[select.options.length] = new Option(numOption, numOption);
+        };  
+    }
+</script>
+
+    <h2>
+        <p>Select Part Number:   </p>
+        <select id="SelectNum"> 
+            <option> Select Part Number </option>
+        </select>
+    </h2>
+
+    <div id="message"></div>
+
 {% endblock %}
+

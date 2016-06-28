@@ -20,13 +20,11 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
-    url(r'^$', views.index, name='home'),
-    url(r'^about/$', 
-        TemplateView.as_view(template_name ='about.html'), 
-        name ='about'), 
-    url(r'^contact/$', 
-        TemplateView.as_view(template_name ='contact.html'), 
-        name ='contact'),
+    url(r'^$',views.index,name='home'),
+    url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'), 
+    url(r'^contact/$', TemplateView.as_view(template_name ='contact.html'), name='contact'),
+    url(r'^parts/(?P<Slug>[-\w]+)/$', views.part_detail,name='part_detail'), 
+    url(r'^parts/(?P<Slug>[-\w]+)/edit/$', views.edit_part, name='edit_part'),
+    url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^admin/', admin.site.urls),
 ]
