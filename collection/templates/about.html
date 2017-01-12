@@ -1,6 +1,14 @@
 {% extends 'layouts/base.html' %} 
 {% block title %}About - {{ block.super }}{% endblock %} 
 {% block content %}
-    <h1> About Page </h1>
-    <p> This is the about page. </p> 
+    <h1 id="about"> About Page </h1>
+    <p> A database web app to help in the Parts Shop. Made by Ryan Ackett using Django and SQLite3.  </p> 
+    <style>
+        #about{
+            text-align: center;
+        }
+        p{
+            text-align: center;
+        }
+    </style>
 {% endblock %}

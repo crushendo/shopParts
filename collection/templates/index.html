@@ -1,52 +1,174 @@
 {% extends 'layouts/base.html' %} 
 {% block title %} Homepage - {{ block.super }}{% endblock %} 
-
+<html>
 {% block content %}
-
+<body>
+<form name="form" role="form" onsubmit="submission();" method=POST action="">
+    {% csrf_token %}
+    
+    
+    <div align="left"><h2 id="quickSearch">Quick Search: </h2>
+        <input type="radio" id="Equip_Num" name="searchType" value="Equip_Num" checked> Equipment Number
+        <input type="radio" id="PART_NUM" name="searchType" value="PART_NUM" > Part Number
+        <input type="radio" id="PART_DESC" name="searchType" value="PART_DESC"> Description &nbsp; &nbsp;   
+        <input type="text" name="searchValue" size="25" id="searchValue" value=""> &nbsp; 
+        <input type="button" value="Search" onclick="return verify();"/>
+    </div>
+    
     <h2>
-        <p>Select Part Category:   </p>
+        Browse Parts:   
         <select id="SelectCat" onchange="getSelection1()" > 
             <option value="Select a Category"> Select a Category </option>
             {% for part in partDistinct %}
                 <option value="{{part}}"> {{ part }} </option>
             {% endfor %}
         </select>
-    </h2>
-
-<script type="text/javascript">
-    function getSelection1() {
-        document.getElementById("SelectNum").options.length = 0;
-        var selection1 = document.getElementById("SelectCat").value;
-        var a = {{ jsonDict|safe }};
-        var selectedNums = a[selection1];
-        var numsList = a[selection1];
-        var length = 0;
-        for( var selected1 in numsList ) {
-            if( numsList.hasOwnProperty(selected1) ) {
-                ++length;
-            };
-        }
-        var check = typeof numsList
-        var select = document.getElementById('SelectNum');
-        select.options[select.options.length] = new Option("Select a Part Number", "Select a Part Number");
-        for(var ii = 0; ii < length; ii++){
-            numOption = numsList[ii];
-            if (numOption == ""){
-                continue;
-            }
-            select.options[select.options.length] = new Option(numOption, numOption);
-        };  
-    }
-</script>
-
-    <h2>
-        <p>Select Part Number:   </p>
-        <select id="SelectNum"> 
-            <option> Select Part Number </option>
+        <select id="SelectNum" name="SelectNum" onChange=" clearSearch(); submission(); formSubmit();"> 
+            <option> Select a Number </option>
         </select>
     </h2>
-
-    <div id="message"></div>
-
+    
+    <h2>
+        Add Item:   
+        <select id="addItem" name="addItem" onChange="window.document.location.href=this.options[this.selectedIndex].value;" value="GO"> 
+            <option value=""> Select Item to Add </option>
+            <option value="parts/addpart/"> Part </option>
+            <option value="parts/addimage/"> Image </option>
+        </select>
+    </h2>
+    
+    <script type="text/javascript">
+        function getSelection1() {
+            document.getElementById("SelectNum").options.length = 0;
+            var selection1 = document.getElementById("SelectCat").value;
+            var a = {{ jsonDict|safe }};
+            var selectedNums = a[selection1];
+            var numsList = a[selection1];
+            var length = 0;
+            for( var selected1 in numsList ) {
+                if( numsList.hasOwnProperty(selected1) ) {
+                    ++length;
+                };
+            }
+            var check = typeof numsList
+            var select = document.getElementById('SelectNum');
+            select.options[select.options.length] = new Option("Select a Number", "Select a Number");
+            for(var ii = 0; ii < length; ii++){
+                numOption = numsList[ii];
+                if (numOption == ""){
+                    continue;
+                }
+                select.options[select.options.length] = new Option(numOption, numOption);
+            };  
+        }
+        
+    </script>
+    
+    <script type="text/javascript">
+        function formSubmit() {
+            var submitNum = document.getElementById("SelectNum").value;
+            var submitCat = document.getElementById("SelectCat").value;
+            var submitStr = 'parts/list';
+            document.form.action = submitStr;
+            document.forms["form"].submit();
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function addItemjs() {
+            var itemSelected = document.getElementById("addItem").value;
+            if(itemSelected == "Part") {
+                var addStr = "/parts/addpart/";
+            }
+            else if(itemSelected == "Category") {
+                var addStr = "/add_category/";
+            }
+            else if(itemSelected == "Image") {
+                var addStr = "/parts/addimage/";
+            }
+            document.partForm.action = addStr;
+            document.forms["partForm"].submit();
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function submission() {
+	        
+            var newCATEGORY = String(document.getElementById('SelectCat').value);
+            var newNUMBER = String(document.getElementById('SelectNum').value);
+            document.getElementById("id_CATEGORY").value = newCATEGORY;
+            document.getElementById("id_NUMBER").value = newNUMBER;
+            var searchValue = document.getElementById("searchValue").value;
+ 	    var searchValue = document.getElementById("searchValue").value
+            window.localStorage["searchValue"] = searchValue;
+            var ranb = window.localStorage["searchValue"];
+	    //alert(ranb);           
+	 }
+    </script>
+    
+    <script>
+        function verify() {
+            var searchValue;
+            searchValue = document.getElementById("searchValue").value;
+            if (searchValue == '' || searchValue == ' '){
+                alert("Please enter a query in the search field.");
+                return false;
+            }
+            else{
+                var newCATEGORY = String(document.getElementById('SelectCat').value);
+                var newNUMBER = String(document.getElementById('SelectNum').value);
+                document.getElementById("id_CATEGORY").value = newCATEGORY;
+                document.getElementById("id_NUMBER").value = newNUMBER;
+                var submitNum = document.getElementById("SelectNum").value;
+                var submitCat = document.getElementById("SelectCat").value;
+                var submitStr = 'parts/list';
+	    	var searchValue = document.getElementById("searchValue").value;
+                window.localStorage["searchValue"] = searchValue;
+		var ranb = window.localStorage["searchValue"];
+		if (document.getElementById('Equip_Num').checked) {
+  			var searchType = document.getElementById('Equip_Num').value;
+		}
+		if (document.getElementById('PART_NUM').checked) {
+                        var searchType = document.getElementById('PART_NUM').value;
+                }
+		if (document.getElementById('PART_DESC').checked) {
+                        var searchType = document.getElementById('PART_DESC').value;
+                }
+		window.localStorage["searchType"] = searchType;	
+                document.form.action = submitStr;
+                document.forms["form"].submit();
+            }
+        }
+    </script>
+    
+    <script type="text/javascript"> 
+        function stopRKey(evt) { 
+          var evt = (evt) ? evt : ((event) ? event : null); 
+          var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
+          if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
+        } 
+        document.onkeypress = stopRKey; 
+    </script>
+    
+    <script>
+        function clearSearch() {
+            document.getElementById("searchValue").value = "";
+        }
+    </script>
+    
+    <p hidden>
+    {{ form.CATEGORY.as_hidden }}
+    {{ form.NUMBER.as_hidden }} 
+    </p>
+    
+    
+</form>
+<style>
+        #quickSearch {
+            display: inline-block;
+            margin-bottom: 0px;
+        } 
+</style>
+</body>
 {% endblock %}
-
+<html>

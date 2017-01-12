@@ -17,14 +17,28 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from collection import views
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
+import os
+
+import django.views.defaults
 
 
 urlpatterns = [
     url(r'^$',views.index,name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'), 
     url(r'^contact/$', TemplateView.as_view(template_name ='contact.html'), name='contact'),
+    url(r'^parts/addpart/$', views.addpart,name='addpart'),
+    url(r'^parts/addimage/$', views.addimage,name='addimage'),
     url(r'^parts/(?P<Slug>[-\w]+)/$', views.part_detail,name='part_detail'), 
     url(r'^parts/(?P<Slug>[-\w]+)/edit/$', views.edit_part, name='edit_part'),
     url(r'^admin/', include(admin.site.urls)),
-
+    url(r'^parts/list$', views.part_list, name='part_list'),
+    url(r'^parts/(?P<Slug>[-\w]+)/$', views.part_detail,name='part_detail'), 
+    
+    
 ]
+
+
+if settings.DEBUG is True:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

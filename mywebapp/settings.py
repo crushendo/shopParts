@@ -23,8 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '8f!^eg!++okj^q@dgf#ndzflwu2$gq)#lbkc0(8z)hinmd3upb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = False
 
+DEBUG = True
+DEBUG404 = False
+#DEBUG404 = True 
+ALLOWED_HOSTS = ['*'] # it works but not secure, so use
+ALLOWED_HOSTS = ['localhost', 'IP adrs'] #if you are running locally, then run with python manage.py runserver --insecure.You can give your webserver here.
 ALLOWED_HOSTS = ['*']
 
 
@@ -102,6 +107,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home2/media/media.lawrence.com/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
@@ -120,3 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+if DEBUG: 
+    STATIC_ROOT = os.path.join(BASE_DIR, '/static')
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static') 

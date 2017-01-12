@@ -1,35 +1,59 @@
+<!DOCTYPE html>
 {% load staticfiles %}
-<! doctype html >
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
         <title>
             {% block title %}
                 Parts Finder
             {% endblock %}
         </title>
         <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-        {% block header %}{% endblock %}
+             
     </head>
     <body>
         <header> 
-            <h1 > DUDA Shop Parts Search Tool </h1> 
+            <h1 id ="title"> DUDA Shop Parts Search Tool </h1> 
             <nav> 
-                <ul> 
-                    <li> 
+                <ul id="ulBase"> 
+                    <li id="liBase"> 
                         <a href ="{% url 'home' %}">Home</a> 
                     </li> 
-                    <li> 
+                    <li id="liBase"> 
                         <a href ="{% url 'about' %}" > About </a> 
-                    </li> 
-                    <li> 
-                        <a href ="{% url 'contact' %}" > Contact </a> 
                     </li> 
                 </ul> 
             </nav>
-        </header> 
+	<style>
+                    #title{
+                        text-align: center;
+                    }
+                    #ulBase {
+                        list-style-type: none;
+                        margin: 0;
+                        padding: 0;
+                        overflow: hidden;
+                        background-color: #333;
+                    }
+                    #liBase {
+                        float: left;
+                    }
+                    #liBase a {
+                        display: block;
+                        color: white;
+                        text-align: center;
+                        padding: 14px 16px;
+                        text-decoration: none;
+                    }
+                    #liBase a:hover {
+                        background-color: #111;
+                    }
+        </style>
+        </header>
+
         {% block content %}{% endblock %}
         {% block footer %}{% endblock %}
-    </body>
+	</body> 
 
 </html>

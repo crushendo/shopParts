@@ -5,7 +5,7 @@ from collection.models import Part
 # set up automated slug creation
 class PartAdmin(admin.ModelAdmin): 
     model = Part 
-    list_display = ('id', 'CATEGORY', 'NUMBER', 'PART_NUM',) 
+    list_display = ('CATEGORY', 'NUMBER', 'PART_NUM',) 
     prepopulated_fields = {'Slug': ('CATEGORY',)}
 
 # and register it 
