@@ -56,13 +56,13 @@ def index(request):
     
 def part_list(request):
     if request.method == "POST":   
-   	 CATEGORY = str(request.POST.get("CATEGORY"))
-   	 NUMBER = str(request.POST.get("NUMBER"))
-   	 if request.POST.get("searchType") == 'Equip_Num':
-   	     searchType = "NUMBER__icontains"
-   	 else:
-        	searchType = str(request.POST.get("searchType")) + '__icontains' #case insensitive search
-    	 searchValue = str(request.POST.get("searchValue"))
+        CATEGORY = str(request.POST.get("CATEGORY"))
+        NUMBER = str(request.POST.get("NUMBER"))
+        if request.POST.get("searchType") == 'Equip_Num':
+            searchType = "NUMBER__icontains"
+        else:
+            searchType = str(request.POST.get("searchType")) + '__icontains' #case insensitive search
+        searchValue = str(request.POST.get("searchValue"))
     parts = Part.objects.all()
     #if using the browse function
     if searchValue == '':
@@ -116,67 +116,66 @@ def part_detail(request, Slug):
     if request.method == "POST": 
         # grab the data from the submitted form and apply to 
         # the form 
-	CATEGORY = str(request.POST.get("CATEGORY"))
+        CATEGORY = str(request.POST.get("CATEGORY"))
         NUMBER = str(request.POST.get("NUMBER"))
-	searchValue = str(request.POST.get("searchValue"))
-	if request.POST.get("searchType") == 'Equip_Num':
-             searchType = "NUMBER__icontains"
+        searchValue = str(request.POST.get("searchValue"))
+        if request.POST.get("searchType") == 'Equip_Num':
+                 searchType = "NUMBER__icontains"
         else:
-                searchType = str(request.POST.get("searchType")) + '__icontains' #case insensitive search
+            searchType = str(request.POST.get("searchType")) + '__icontains' #case insensitive search
         form = form_class(request.POST, instance=part) 
         if form.is_valid():
-	    whatDo = request.POST.get("whatDo")
-	    if whatDo == "delete": 
-            	#Delete row from Parts db
-            	deletingPart=Part.objects.get(Slug=Slug)
-            	deletingPart.delete()
-            	#Delete row from Document db
-            	#Check to see if is image
-            	descCheck = str(passDesc[0][:7])
-            	#Deleting image file from media folder
-	
-            	if descCheck == 'C:\\fake':
+            whatDo = request.POST.get("whatDo")
+            if whatDo == "delete": 
+                #Delete row from Parts db
+                deletingPart=Part.objects.get(Slug=Slug)
+                deletingPart.delete()
+                #Delete row from Document db
+                #Check to see if is image
+                descCheck = str(passDesc[0][:7])
+                #Deleting image file from media folder
+                if descCheck == 'C:\\fake':
                 	deletingDoc = Document.objects.get(relSlug=Slug)
                 	deletingDoc.delete()
                 	currentDir = os.getcwd()
                 	smartPath = currentDir + '/media/' + str(filePathEle)
                 	os.remove(smartPath)
-	    form = form_class(data = request.POST)
+            form = form_class(data = request.POST)
             form.save()
-	    parts = Part.objects.all()
+            parts = Part.objects.all()
             #if using the browse function
     	    if searchValue == '':
-       		 SelectNumStr = str(NUMBER)
-       		 SelectCatStr = str(CATEGORY)
-       		 selectedList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("PART_NUM", flat=True))
-       		 slugList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("Slug", flat=True))
-       		 descList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("PART_DESC", flat=True))
-         	 selectedListjson = json.dumps(selectedList)
-        	 descListjson = json.dumps(descList)
-       		 slugListjson = json.dumps(slugList)
-       		 listLength = len(selectedList)
-   	    #if using the search function
+       	        SelectNumStr = str(NUMBER)
+       	        SelectCatStr = str(CATEGORY)
+       	        selectedList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("PART_NUM", flat=True))
+       	        slugList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("Slug", flat=True))
+       	        descList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("PART_DESC", flat=True))
+                selectedListjson = json.dumps(selectedList)
+                descListjson = json.dumps(descList)
+       	        slugListjson = json.dumps(slugList)
+       	        listLength = len(selectedList)
+            #if using the search function
     	    else:
-      		  NUMBER = ''
-      		  my_filter = {}
-       	          my_filter[searchType] = searchValue
-  		  selectedList = list(Part.objects.filter(**my_filter).order_by(Lower("PART_NUM")).values_list("PART_NUM", flat=True))
-  		  slugList = list(Part.objects.filter(**my_filter).order_by(Lower("PART_NUM")).values_list("Slug", flat=True))
-  		  descList = list(Part.objects.filter(**my_filter).order_by(Lower("PART_NUM")).values_list("PART_DESC", flat=True))
-  		  selectedListjson = json.dumps(selectedList)
-  		  descListjson = json.dumps(descList)
-      		  slugListjson = json.dumps(slugList)
-      		  listLength = len(selectedList)    
+                NUMBER = ''
+                my_filter = {}
+       	        my_filter[searchType] = searchValue
+                selectedList = list(Part.objects.filter(**my_filter).order_by(Lower("PART_NUM")).values_list("PART_NUM", flat=True))
+                slugList = list(Part.objects.filter(**my_filter).order_by(Lower("PART_NUM")).values_list("Slug", flat=True))
+                descList = list(Part.objects.filter(**my_filter).order_by(Lower("PART_NUM")).values_list("PART_DESC", flat=True))
+                selectedListjson = json.dumps(selectedList)
+                descListjson = json.dumps(descList)
+                slugListjson = json.dumps(slugList)
+                listLength = len(selectedList)    
             return render(request, 'parts/part_list.html', {
-        	'parts': parts,
-        	'NUMBER': NUMBER,
-        	'searchValue': searchValue,
-        	'selectedListjson': selectedListjson,
-        	'slugListjson': slugListjson,
-        	'descListjson': descListjson,
-        	'listLength': listLength,
-        	'slugList': slugList,
-        	'selectedList': selectedList,
+                'parts': parts,
+                'NUMBER': NUMBER,
+                'searchValue': searchValue,
+                'selectedListjson': selectedListjson,
+                'slugListjson': slugListjson,
+                'descListjson': descListjson,
+                'listLength': listLength,
+                'slugList': slugList,
+                'selectedList': selectedList,
    	     })
         else:
             print form.errors
@@ -235,7 +234,7 @@ def edit_part(request, Slug):
     return render(request, 'parts/edit_part.html', { 
         'part': part, 
         'Slug': Slug,
-	'lastSlugNum': lastSlugNum,
+        'lastSlugNum': lastSlugNum,
         'parts': parts,
         'jsonDict': jsonDict,
         'numList': numList,
@@ -266,7 +265,6 @@ def addpart(request):
             k = k + 1
         j = j + 1
     jsonDict = json.dumps(partDict)
-    
     #Hidden form from 'Edit Part'
     # set the form we're using 
     form_class = addPartForm
@@ -278,30 +276,30 @@ def addpart(request):
         CATEGORY = str(request.POST.get("CATEGORY"))
         NUMBER = str(request.POST.get("NUMBER"))
         PART_DESC = str(request.POST.get("PART_DESC"))
-	searchValue = request.POST.get("searchValue")
+        searchValue = request.POST.get("searchValue")
         partNum = str(request.POST.get("partNum")).upper()
         partNum = partNum.strip()
         aaaa = Part.objects.filter(CATEGORY=CATEGORY).filter(NUMBER=NUMBER).filter(PART_NUM=partNum).order_by("PART_NUM").values_list("PART_NUM", flat=True)
         if Part.objects.filter(CATEGORY=CATEGORY).filter(NUMBER=NUMBER).filter(PART_NUM=partNum).exists() > 0:
             duplicateFlag=1
             return render(request, 'parts/addpart.html', {
-                    'duplicateFlag': duplicateFlag,
-                    'lastSlugNum': lastSlugNum,
-                    'parts': parts,
-                    'jsonDict': jsonDict,
-                    'numList': numList,
-                    'partDistinct': partDistinct,
-                    'partDict': partDict,
-                    'currentCat': currentCat, 
-                    'form': form, 
-                    'CATEGORY': CATEGORY,
-                    'NUMBER': NUMBER,
-                    'PART_DESC': PART_DESC,
-                })
+                'duplicateFlag': duplicateFlag,
+                'lastSlugNum': lastSlugNum,
+                'parts': parts,
+                'jsonDict': jsonDict,
+                'numList': numList,
+                'partDistinct': partDistinct,
+                'partDict': partDict,
+                'currentCat': currentCat, 
+                'form': form, 
+                'CATEGORY': CATEGORY,
+                'NUMBER': NUMBER,
+                'PART_DESC': PART_DESC,
+            })
         if form.is_valid(): 
             form.save()
-	parts = Part.objects.all()
-	SelectNumStr = str(NUMBER)
+        parts = Part.objects.all()
+        SelectNumStr = str(NUMBER)
         SelectCatStr = str(CATEGORY)
         selectedList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("PART_NUM", flat=True))
         slugList = list(Part.objects.filter(NUMBER=SelectNumStr).filter(CATEGORY=SelectCatStr).order_by(Lower("PART_NUM")).values_list("Slug", flat=True))
@@ -311,16 +309,16 @@ def addpart(request):
         slugListjson = json.dumps(slugList)
         listLength = len(selectedList)
         return render(request, 'parts/part_list.html', {
-   	     'parts': parts,
-   	     'NUMBER': NUMBER,
-   	     'searchValue': searchValue,
-   	     'selectedListjson': selectedListjson,
-   	     'slugListjson': slugListjson,
-   	     'descListjson': descListjson,
-   	     'listLength': listLength,
-   	     'slugList': slugList,
-   	     'selectedList': selectedList,
-   	 })
+   	        'parts': parts,
+   	        'NUMBER': NUMBER,
+   	        'searchValue': searchValue,
+   	        'selectedListjson': selectedListjson,
+   	        'slugListjson': slugListjson,
+   	        'descListjson': descListjson,
+   	        'listLength': listLength,
+   	        'slugList': slugList,
+   	        'selectedList': selectedList,
+   	    })
 
     # otherwise just create the form 
     else: 
